@@ -29,12 +29,10 @@ const Menu = ({ children }: Props) => {
             <ScrollArea className="flex flex-col gap-4 pt-8">
               <ul className="flex flex-col gap-3">
                 {menuItems.map((item) => (
-                  <>
-                    <li key={item.url} className="text-sm">
-                      <Link href={item.url}>{item.title}</Link>
-                    </li>
+                  <li key={item.url} className="text-sm">
+                    <Link href={item.url}>{item.title}</Link>
                     <Separator className="my-1" />
-                  </>
+                  </li>
                 ))}
               </ul>
             </ScrollArea>
