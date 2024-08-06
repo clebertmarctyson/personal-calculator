@@ -20,33 +20,48 @@ import { Input } from "@/components/ui/input";
 import { Copy } from "lucide-react";
 
 import { toast } from "@/components/ui/use-toast";
-import { calculateGrowthRate } from "@/lib/calculations";
+import {
+  calculatePerncentRate,
+  calculateFinalAmount,
+} from "@/lib/calculations";
 
 const formSchema = z.object({
   initialAmount: z.number().positive().nonnegative(),
-  finalAmount: z.number().positive().nonnegative(),
+  percentage: z.number().positive().nonnegative(),
 });
 
-const GrowthRate = () => {
-  const [result, setResult] = useState<string>(parseFloat("0").toFixed(2));
+const PerncentRate = () => {
+  const [resultPercentAmount, setResultPercentAmount] = useState<string>("0");
+  const [resultFinalAmount, setResultFinalAmount] = useState<string>(
+    parseFloat("0").toFixed(2)
+  );
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       initialAmount: 0,
-      finalAmount: 0,
+      percentage: 0,
     },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    const { initialAmount, finalAmount } = data;
-    const result = calculateGrowthRate(initialAmount, finalAmount);
-    setResult(result.toString());
+    const { initialAmount, percentage } = data;
+
+    const resultPercentAmount = calculatePerncentRate(
+      initialAmount,
+      percentage
+    );
+    const resultFinalAmount = calculateFinalAmount(initialAmount, percentage);
+
+    setResultPercentAmount(resultPercentAmount.toString());
+    setResultFinalAmount(resultFinalAmount.toString());
   };
 
   return (
     <section className="flex flex-col gap-4 mx-auto p-8">
-      <h1 className="text-2xl font-bold text-center">Growth Rate Calculator</h1>
+      <h1 className="text-2xl font-bold text-center">
+        Perncent Rate Calculator
+      </h1>
 
       <div className="flex flex-wrap-reverse justify-center gap-4">
         <Form {...form}>
@@ -82,22 +97,22 @@ const GrowthRate = () => {
 
             <FormField
               control={form.control}
-              name="finalAmount"
+              name="percentage"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Final Amount <span className="text-red-500">*</span>
+                    Percentage <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Final Amount"
+                      placeholder="Percentage"
                       type="number"
                       step={0.01}
-                      {...form.register("finalAmount", { valueAsNumber: true })}
+                      {...form.register("percentage", { valueAsNumber: true })}
                     />
                   </FormControl>
                   <FormDescription>
-                    The final amount of the investment or asset.
+                    The percentage rate of the initial amount.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -115,7 +130,8 @@ const GrowthRate = () => {
                 variant={"outline"}
                 onClick={() => {
                   form.reset();
-                  setResult(parseFloat("0").toFixed(2));
+                  setResultPercentAmount("0");
+                  setResultFinalAmount(parseFloat("0").toFixed(2));
                 }}
               >
                 Reset
@@ -127,24 +143,48 @@ const GrowthRate = () => {
         <div className="w-full sm:w-1/2 flex flex-col gap-4 p-8">
           <h2 className="text-lg font-bold text-center">Results</h2>
 
-          <div className="flex gap-2 items-center justify-center">
-            <p>
-              Growth Rate:{" "}
-              <span className="text-primary font-bold">{result}</span>
-              <span>%</span>
-            </p>
-            <Copy
-              size={16}
-              className="text-primary cursor-pointer"
-              onClick={() => {
-                navigator.clipboard.writeText(result.toString());
+          <div className="flex justify-between gap-4">
+            <div className="flex gap-2 items-center justify-center">
+              <p>
+                Percent Amount:{" "}
+                <span className="text-primary font-bold">
+                  ${resultPercentAmount}
+                </span>
+              </p>
+              <Copy
+                size={16}
+                className="text-primary cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(resultPercentAmount.toString());
 
-                toast({
-                  title: "Copied to clipboard",
-                  variant: "default",
-                });
-              }}
-            />
+                  toast({
+                    title: "Copied to clipboard",
+                    variant: "default",
+                  });
+                }}
+              />
+            </div>
+
+            <div className="flex gap-2 items-center justify-center">
+              <p>
+                Final Amount:{" "}
+                <span className="text-primary font-bold">
+                  ${resultFinalAmount}
+                </span>
+              </p>
+              <Copy
+                size={16}
+                className="text-primary cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(resultFinalAmount.toString());
+
+                  toast({
+                    title: "Copied to clipboard",
+                    variant: "default",
+                  });
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -152,4 +192,4 @@ const GrowthRate = () => {
   );
 };
 
-export default GrowthRate;
+export default PerncentRate;

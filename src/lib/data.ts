@@ -7,4 +7,8 @@ export const menuItems = [
     title: "Growth Rate",
     url: "/growth-rate",
   },
+  {
+    title: "Percent Rate",
+    url: "/percent-rate",
+  },
 ];
